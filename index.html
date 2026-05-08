@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Circuits - Interactive 3D Poster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease-in;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+        
+        .card p {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .circuit-selector {
+            margin: 20px 0;
+        }
+        
+        .circuit-selector label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .circuit-selector select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 1em;
+            background-color: white;
+        }
+        
+        .visualization {
+            width: 100%;
+            max-width: 500px;
+            height: 400px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #666;
+        }
+        
+        .concepts {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 40px;
+        }
+        
+        .concepts h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        
+        .concept {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .concept:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .concept h3 {
+            color: #764ba2;
+            margin-bottom: 10px;
+            font-size: 1.4em;
+        }
+        
+        .concept p {
+            color: #555;
+            line-height: 1.7;
+        }
+        
+        .team {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        
+        .team h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .team-member {
+            display: inline-block;
+            margin: 10px 15px;
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            color: #333;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 15px;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            background: #764ba2;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .bloch-sphere {
+            width: 100%;
+            height: 400px;
+            background: radial-gradient(circle, #fff 0%, #e0e0e0 100%);
+            border-radius: 10px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: #667eea;
+        }
+        
+        .circuit-images {
+            margin-top: 20px;
+        }
+        
+        .circuit-images img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌌 Quantum Circuits 🌌</h1>
+            <p class="subtitle">Interactive 3D Physics Poster - Understanding the Future of Computing</p>
+        </header>
+        
+        <div class="content">
+            <div class="card">
+                <h2>Interactive Circuit Viewer</h2>
+                <p>Select a quantum circuit below to explore different quantum phenomena:</p>
+                
+                <div class="circuit-selector">
+                    <label for="circuit-select">Choose a Circuit:</label>
+                    <select id="circuit-select" onchange="updateCircuit()">
+                        <option value="bell">Bell State (Entanglement)</option>
+                        <option value="superposition">Superposition</option>
+                        <option value="ghz">GHZ State (3-Qubit)</option>
+                    </select>
+                </div>
+                
+                <button onclick="showCircuit()">📊 Show Circuit</button>
+                <button onclick="showResults()">📈 Show Results</button>
+                
+                <div class="circuit-images" id="circuit-display"></div>
+            </div>
+            
+            <div class="card">
+                <h2>Bloch Sphere Visualization</h2>
+                <p>The Bloch sphere represents the state of a single qubit in 3D space:</p>
+                <div class="bloch-sphere" id="bloch">
+                    🔮<br>
+                    Quantum State Sphere
+                </div>
+                <p style="margin-top: 15px; font-size: 0.9em; color: #666;">
+                    <strong>North Pole (|0⟩):</strong> Classical 0<br>
+                    <strong>South Pole (|1⟩):</strong> Classical 1<br>
+                    <strong>Equator:</strong> Superposition states
+                </p>
+            </div>
+        </div>
+        
+        <div class="concepts">
+            <h2>Key Quantum Concepts</h2>
+            
+            <div class="concept">
+                <h3>🔄 Superposition</h3>
+                <p>
+                    A qubit can exist in a superposition of both 0 and 1 states simultaneously, 
+                    unlike classical bits. This is achieved using quantum gates like the Hadamard gate. 
+                    When measured, it collapses to either 0 or 1 with equal probability.
+                </p>
+            </div>
+            
+            <div class="concept">
+                <h3>🔗 Entanglement</h3>
+                <p>
+                    Qubits can become entangled, meaning their states are interdependent. 
+                    Measuring one qubit instantly determines the state of the other, 
+                    regardless of distance. Einstein called this "spooky action at a distance."
+                </p>
+            </div>
+            
+            <div class="concept">
+                <h3>⚛️ Quantum Gates</h3>
+                <p>
+                    <strong>Hadamard (H):</strong> Creates superposition<br>
+                    <strong>Pauli-X:</strong> Flips qubit state (like classical NOT)<br>
+                    <strong>CNOT:</strong> Controlled-NOT, creates entanglement<br>
+                    <strong>Measure:</strong> Collapses qubit to definite state
+                </p>
+            </div>
+            
+            <div class="concept">
+                <h3>📊 Measurement & Collapse</h3>
+                <p>
+                    When a quantum system is measured, it collapses from a superposition 
+                    into a definite state. This is fundamental to quantum mechanics and 
+                    makes quantum computing both powerful and probabilistic.
+                </p>
+            </div>
+        </div>
+        
+        <div class="team">
+            <h2>👥 Team Members</h2>
+            <div class="team-member">Electronics & Computing Students</div>
+            <p style="margin-top: 20px; color: #999;">Spring 2026 - Physics 3D Poster Presentation</p>
+        </div>
+    </div>
+    
+    <script>
+        let currentCircuit = 'bell';
+        
+        const circuitData = {
+            'bell': {
+                name: 'Bell State (Entanglement)',
+                circuit: 'circuit_bell_state.png',
+                histogram: 'histogram_bell_state.png',
+                results: '|00⟩: 468/1000 (46.8%)\n|11⟩: 532/1000 (53.2%)',
+                description: 'Perfect entanglement! Both qubits are correlated.'
+            },
+            'superposition': {
+                name: 'Superposition',
+                circuit: 'circuit_superposition.png',
+                histogram: 'histogram_superposition.png',
+                results: '|0⟩: 488/1000 (48.8%)\n|1⟩: 512/1000 (51.2%)',
+                description: '50-50 distribution showing true superposition!'
+            },
+            'ghz': {
+                name: 'GHZ State (3-Qubit)',
+                circuit: 'circuit_ghz_state.png',
+                histogram: 'histogram_ghz_state.png',
+                results: '|000⟩: 474/1000 (47.4%)\n|111⟩: 526/1000 (52.6%)',
+                description: 'Three qubits entangled together!'
+            }
+        };
+        
+        function updateCircuit() {
+            currentCircuit = document.getElementById('circuit-select').value;
+            document.getElementById('circuit-display').innerHTML = '';
+        }
+        
+        function showCircuit() {
+            const data = circuitData[currentCircuit];
+            let html = `<h3>${data.name}</h3>`;
+            html += `<p><strong>${data.description}</strong></p>`;
+            html += `<img src="${data.circuit}" alt="Circuit diagram">`;
+            document.getElementById('circuit-display').innerHTML = html;
+        }
+        
+        function showResults() {
+            const data = circuitData[currentCircuit];
+            let html = `<h3>${data.name} - Results</h3>`;
+            html += `<p><strong>${data.description}</strong></p>`;
+            html += `<img src="${data.histogram}" alt="Measurement results">`;
+            document.getElementById('circuit-display').innerHTML = html;
+        }
+    </script>
+</body>
+</html>
